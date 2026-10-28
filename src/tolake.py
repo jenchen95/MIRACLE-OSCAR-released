@@ -5,10 +5,11 @@ import os
 dotenv.load_dotenv(override=True)
 
 
-duckdb.sql("""
+con = duckdb.connect()
+con.execute("""
 INSTALL ducklake; LOAD 'ducklake';
 """)
-duckdb.sql(os.getenv("DUCKLAKE_CONFIG"))
+con.execute(os.getenv("DUCKLAKE_CONFIG"))
 
 
 prefix = '../data/data_output/AR6_drivers/dtg_weighted_'
@@ -34,5 +35,5 @@ temper_cf = (
 )
 
 temper = pl.concat([temper_hist, temper_scen, temper_cf]).collect()
-duckdb.sql("""create or replace table MIRACLE_MAIN.temper as select * from temper""")
+con.execute("""create or replace table MIRACLE_MAIN.temper as select * from temper""")
 print('Exported to ducklake')
