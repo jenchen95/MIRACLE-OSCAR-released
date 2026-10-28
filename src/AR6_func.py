@@ -182,7 +182,7 @@ def ar6_load():
     """
     
     # Execute query and convert to polars DataFrame
-    df = conn.execute(query).pl()
+    df = pl.from_arrow(conn.execute(query).to_arrow_table())
     
     # First get the SSP mapping to avoid sparse arrays
     ssp_mapping = (df.select(['scenario_id', 'ssp'])
